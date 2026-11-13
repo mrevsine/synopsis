@@ -36,10 +36,10 @@ readonly SLURM_KEYS=(job-name account partition time mem cpus-per-task ntasks no
 
 usage() {
     echo "Usage:"
-    echo "  Direct mode (default):   $0 [kmer|sample] [options] <input file|list>"
-    echo "  Individual mode:         $0 individual [kmer|sample] [options] <input file|list>"
-    echo "  Batch mode:              $0 individual [kmer|sample] --config <config_file> [-y] [options] <input file|list>"
-    echo "  Balanced mode:           $0 balanced [kmer|sample] [options] <file_list> <indir>"
+    echo "  Direct mode (default):   synopsis [kmer|sample] [options] <input file|list>"
+    echo "  Individual mode:         synopsis individual [kmer|sample] [options] <input file|list>"
+    echo "  Batch mode:              synopsis individual [kmer|sample] --config <config_file> [-y] [options] <input file|list>"
+    echo "  Balanced mode:           synopsis balanced [kmer|sample] [options] <file_list> <indir>"
     echo ""
     echo "Dedup options (shared across all modes):"
     echo "  -d <float>  Duplicate retention rate. Default 0.0 (strict)"
@@ -69,7 +69,7 @@ usage() {
     echo ""
     echo "Post-processing options:"
     echo "  -f          Generate final training bed and fasta files from all samples. Creates <output dir>/all_train.bed, <output dir>/all_train.fasta, and <output dir>/all_dev.bed, all_dev.fasta"
-    echo "  -t <int>    Specify the number of samples to reserve for test set. If not specified, no separate test set will be generated."
+    echo "  -t <float>    Specify the amount of samples to reserve for test set relative to the total number of samples. If not specified, no separate test set will be generated."
     echo "  --dev_rate <float>  Specify the fraction of samples to reserve for dev set. Default 0.1. This is recommended over --max_dev, which is a hard cap on the number of dev samples and may bias the results."
     echo "  --max_dev <int>  Specify the maximum number of samples to reserve for dev set. If this count is lower than the dev_rate fraction, the dev set will be capped at this number."
     echo ""
@@ -544,7 +544,6 @@ if [[ "$final_samples_out" -eq 1 ]]; then
         build_final_file_args final_args
 
         input_dir="${output_dir:-dedup_out}"
-        echo "$FINAL_SAMPLES_SCRIPT" -i "$input_dir" "${final_args[@]}"
         "$FINAL_SAMPLES_SCRIPT" -i "$input_dir" "${final_args[@]}"
     fi
 fi
